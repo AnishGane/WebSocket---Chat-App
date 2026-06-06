@@ -1,10 +1,10 @@
-export class APIError extends Error{
-    statusCode;
+export class APIError extends Error {
+  statusCode;
 
-    constructor(message, statusCode = 500){
-        super(message);
-        this.statusCode = statusCode    
+  constructor(message, statusCode = 500) {
+    super(message);
+    this.statusCode = statusCode;
 
-        Object.setPrototypeOf(this, ApiError.prototype);
-    }
+    Object.setPrototypeOf(this, APIError.prototype);
+  }
 }

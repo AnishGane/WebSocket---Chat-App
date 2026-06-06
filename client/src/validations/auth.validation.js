@@ -15,7 +15,10 @@ export const SignupFormSchema = z
       .trim()
       .min(3, "Full name must be at least 3 characters")
       .max(20, "Full name must be at most 20 characters")
-      .regex(/^[a-zA-Z\s]+$/, "Full name can only contain letters and spaces"),
+      .regex(
+        /^[\p{L}\s'-]+$/u,
+        "Full name can only contain letters and spaces",
+      ),
 
     email: z.string().email("Invalid email address"),
 
