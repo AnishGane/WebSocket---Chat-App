@@ -2,7 +2,6 @@ import ChatContainer from "@/components/chat-container";
 import RightSidebar from "@/components/right-sidebar";
 import Sidebar from "@/components/sidebar";
 import { cn } from "@/lib/utils";
-import React from "react";
 import { useState } from "react";
 
 const HomePage = () => {

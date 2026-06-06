@@ -16,6 +16,8 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
+  InputGroupText,
+  InputGroupTextarea,
 } from "@/components/ui/input-group";
 import { EyeIcon } from "lucide-react";
 import { EyeOffIcon } from "lucide-react";
@@ -28,6 +30,7 @@ const SignupForm = ({ className, ...props }) => {
       email: "",
       password: "",
       confirmPassword: "",
+      bio: "",
     },
   });
 
@@ -173,9 +176,33 @@ const SignupForm = ({ className, ...props }) => {
 
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               <FieldDescription className={"text-xs italic"}>
-                *Password must match with the password entered in password
-                input*
+                *Password must match with the password entered in above*
               </FieldDescription>
+            </Field>
+          )}
+        />
+        <Controller
+          name="bio"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="bio">Enter your bio</FieldLabel>
+
+              <InputGroup>
+                <InputGroupTextarea
+                  {...field}
+                  aria-invalid={fieldState.invalid}
+                  id="bio"
+                  placeholder="Enter a bio that describes you"
+                />
+                <InputGroupAddon align="block-end">
+                  <InputGroupText className="text-xs text-muted-foreground">
+                    {field.value.length}/120 characters left
+                  </InputGroupText>
+                </InputGroupAddon>
+              </InputGroup>
+
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
