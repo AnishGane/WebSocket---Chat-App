@@ -5,10 +5,16 @@ import HomePage from "@/pages/home-page";
 import NotFoundPage from "@/pages/not-found";
 import ProfilePage from "@/pages/profile-page";
 import { createBrowserRouter } from "react-router-dom";
+import PublicRoute from "./public-route";
+import ProtectedRoute from "./protected-route";
 
 export const router = createBrowserRouter([
   {
-    element: <AuthLayout />,
+    element: (
+      <PublicRoute>
+        <AuthLayout />,
+      </PublicRoute>
+    ),
     children: [
       {
         path: "/auth",
@@ -18,7 +24,11 @@ export const router = createBrowserRouter([
   },
 
   {
-    element: <AppLayout />,
+    element: (
+      <ProtectedRoute>
+        <AppLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "/",

@@ -19,6 +19,9 @@ import {
 import { EyeOffIcon } from "lucide-react";
 import { useState } from "react";
 import { EyeIcon } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = ({ className, ...props }) => {
   const form = useForm({
@@ -31,8 +34,20 @@ const LoginForm = ({ className, ...props }) => {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  function onSubmit(data) {
-    console.log(data);
+  const { loginUser, authLoading } = useAuth();
+  const navigate = useNavigate();
+
+  async function onSubmit(data) {
+    const result = await loginUser(data);
+
+    if (result.success) {
+      toast.success(result.message);
+      form.reset();
+
+      navigate("/");
+    } else {
+      toast.error(result.message);
+    }
   }
 
   return (
@@ -107,8 +122,12 @@ const LoginForm = ({ className, ...props }) => {
 
         {/* SUBMIT */}
         <Field>
-          <Button type="submit" className={"py-6! cursor-pointer"}>
-            Login
+          <Button
+            type="submit"
+            disabled={authLoading}
+            className={"py-6! cursor-pointer"}
+          >
+            {authLoading ? "Logging in..." : "Login"}
           </Button>
         </Field>
 

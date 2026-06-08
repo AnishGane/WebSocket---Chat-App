@@ -12,6 +12,7 @@ app.use(express.json({ limit: "4mb" }));
 app.use(
   cors({
     origin: ENV.CLIENT_URL,
+    credentials: true,
   }),
 );
 
