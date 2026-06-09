@@ -21,6 +21,9 @@ import {
 } from "@/components/ui/input-group";
 import { EyeIcon } from "lucide-react";
 import { EyeOffIcon } from "lucide-react";
+import { toast } from "sonner";
+import { useAuth } from "@/hooks/use-auth";
+import { useNavigate } from "react-router-dom";
 
 const SignupForm = ({ className, ...props }) => {
   const form = useForm({
@@ -39,8 +42,24 @@ const SignupForm = ({ className, ...props }) => {
     confirmPassword: false,
   });
 
-  function onSubmit(data) {
-    console.log(data);
+  const { registerUser, authLoading } = useAuth();
+  const navigate = useNavigate();
+
+  async function onSubmit(data) {
+    try {
+      const result = await registerUser(data);
+
+      if (result.success) {
+        toast.success(result.message);
+        form.reset();
+
+        navigate("/");
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   }
 
   return (
@@ -209,8 +228,8 @@ const SignupForm = ({ className, ...props }) => {
 
         {/* SUBMIT */}
         <Field>
-          <Button type="submit" className={"py-6! cursor-pointer"}>
-            Create Account
+          <Button type="submit" disabled={!form.formState.isValid || authLoading} className={"py-6! cursor-pointer"}>
+            {authLoading ? "Signing up..." : "Sign up"}
           </Button>
         </Field>
 

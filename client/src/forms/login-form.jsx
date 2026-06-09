@@ -124,7 +124,7 @@ const LoginForm = ({ className, ...props }) => {
         <Field>
           <Button
             type="submit"
-            disabled={authLoading}
+            disabled={!form.formState.isValid || authLoading}
             className={"py-6! cursor-pointer"}
           >
             {authLoading ? "Logging in..." : "Login"}

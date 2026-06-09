@@ -20,22 +20,33 @@ import {
   InputGroupTextarea,
 } from "@/components/ui/input-group";
 import { ProfileSchema } from "@/validations/profile.validation";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
 
 const ProfilePage = () => {
+  const { authUser, updateUserProfile, profileLoading } = useAuth();
+
   const fileInputRef = useRef(null);
 
   const [isEditing, setIsEditing] = useState(false);
+  const [previewImage, setPreviewImage] = useState(
+    authUser?.profilePic || null,
+  );
 
-  const [previewImage, setPreviewImage] = useState("");
+  const [originalData, setOriginalData] = useState({
+    fullName: authUser.fullName,
+    bio: authUser.bio,
+    image: authUser.profilePic || null,
+  });
 
   const form = useForm({
     resolver: zodResolver(ProfileSchema),
 
     defaultValues: {
-      fullName: "Anish Gane",
-      email: "anish@example.com",
-      bio: "Frontend developer passionate about MERN stack.",
-      image: null,
+      fullName: authUser.fullName,
+      email: authUser.email,
+      bio: authUser.bio,
+      image: authUser.profilePic || null,
     },
   });
 
@@ -60,6 +71,12 @@ const ProfilePage = () => {
 
     if (!file) return;
 
+    // 5MB validation
+    if (file.size > 1024 * 1024 * 5) {
+      toast.error("Image size must be less than 5MB");
+      return;
+    }
+
     // save file in RHF
     form.setValue("image", file, {
       shouldValidate: true,
@@ -77,19 +94,60 @@ const ProfilePage = () => {
   };
 
   const removeImage = () => {
-    URL.revokeObjectURL(previewImage);
+    if (previewImage?.startsWith("blob:")) {
+      URL.revokeObjectURL(previewImage);
+    }
+
     form.setValue("image", null, {
       shouldValidate: true,
     });
     setPreviewImage("");
   };
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const handleEdit = () => {
+    setOriginalData({
+      fullName: form.getValues("fullName"),
+      bio: form.getValues("bio"),
+      image: previewImage,
+    });
 
-    // later send to backend
+    setIsEditing(true);
+  };
+
+  const handleCancel = () => {
+    form.reset({
+      fullName: originalData.fullName,
+      email: authUser.email,
+      bio: originalData.bio,
+      image: originalData.image,
+    });
+
+    setPreviewImage(originalData.image);
 
     setIsEditing(false);
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+
+      formData.append("fullName", data.fullName);
+      formData.append("bio", data.bio);
+
+      // append image only if file selected
+      if (data.image instanceof File) {
+        formData.append("profilePic", data.image);
+      }
+
+      const result = await updateUserProfile(formData);
+      if (result.success) {
+        toast.success(result.message);
+        setIsEditing(false);
+      }
+    } catch (error) {
+      toast.error(error.message ?? "Failed to update profile");
+      return;
+    }
   };
 
   return (
@@ -101,13 +159,14 @@ const ProfilePage = () => {
           {isEditing ? (
             <div className="flex items-center gap-2">
               <Button
+                disabled={profileLoading}
                 onClick={form.handleSubmit(onSubmit)}
                 className={"cursor-pointer px-4 py-5"}
               >
-                Save
+                {profileLoading ? "Saving..." : "Save"}
               </Button>
               <Button
-                onClick={() => setIsEditing(false)}
+                onClick={handleCancel}
                 variant="outline"
                 className={"cursor-pointer px-4 py-5"}
               >
@@ -115,10 +174,7 @@ const ProfilePage = () => {
               </Button>
             </div>
           ) : (
-            <Button
-              onClick={() => setIsEditing(true)}
-              className={"cursor-pointer px-4 py-5"}
-            >
+            <Button onClick={handleEdit} className={"cursor-pointer px-4 py-5"}>
               Edit Profile
             </Button>
           )}
@@ -189,7 +245,7 @@ const ProfilePage = () => {
                   </p>
 
                   <p className="text-xs text-muted-foreground mt-1">
-                    JPG, PNG, WEBP supported
+                    JPG, PNG, WEBP supported of max <strong>5MB</strong>
                   </p>
                 </div>
               </div>
@@ -199,7 +255,7 @@ const ProfilePage = () => {
                 type="file"
                 accept="image/png, image/jpeg, image/webp"
                 hidden
-                onChange={handleImageChange}
+                onChange={(e) => handleImageChange(e)}
               />
             </Field>
 

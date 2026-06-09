@@ -4,7 +4,12 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { connectSocket, disconnectSocket } from "@/services/socket.service";
-import { checkAuthAPI, loginAPI, registerAPI } from "@/services/auth.service";
+import {
+  checkAuthAPI,
+  loginAPI,
+  registerAPI,
+  updateUserProfileAPI,
+} from "@/services/auth.service";
 
 export const AuthProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
@@ -12,6 +17,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [socket, setSocket] = useState(null);
   const [authLoading, setAuthLoading] = useState(false);
+  // profile update loading
+  const [profileLoading, setProfileLoading] = useState(false);
   const socketRef = useRef(null);
 
   // Initialize the socket
@@ -137,12 +144,36 @@ export const AuthProvider = ({ children }) => {
     cleanupSocket();
   };
 
+  // update user profile
+  const updateUserProfile = async (body) => {
+    try {
+      setProfileLoading(true);
+
+      const updatedUser = await updateUserProfileAPI(body);
+
+      setAuthUser(updatedUser);
+
+      return {
+        success: true,
+        message: "Profile updated successfully",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error?.response?.data?.message || "Profile update failed",
+      };
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
   const value = {
     authUser,
     setAuthUser,
 
     loading,
     authLoading,
+    profileLoading,
 
     onlineUsers,
     socket,
@@ -150,6 +181,7 @@ export const AuthProvider = ({ children }) => {
     loginUser,
     registerUser,
     logoutUser,
+    updateUserProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

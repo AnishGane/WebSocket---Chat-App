@@ -17,3 +17,9 @@ export const registerAPI = async (data) => {
 
   return response.data;
 };
+
+export const updateUserProfileAPI = async (data) => {
+  const response = await axiosInstance.put("/api/v1/auth/update-profile", data);
+
+  return response.data.data;
+}
