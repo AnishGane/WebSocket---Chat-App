@@ -145,7 +145,12 @@ const SignupForm = ({ className, ...props }) => {
                   align="inline-end"
                 >
                   {showPassword.password ? (
-                    <EyeIcon className="cursor-pointer" />
+                    <EyeIcon
+                      className={cn(
+                        "cursor-pointer text-muted-foreground",
+                        showPassword.password && "text-primary",
+                      )}
+                    />
                   ) : (
                     <EyeOffIcon className="cursor-pointer" />
                   )}
@@ -186,7 +191,12 @@ const SignupForm = ({ className, ...props }) => {
                   align="inline-end"
                 >
                   {showPassword.confirmPassword ? (
-                    <EyeIcon className="cursor-pointer" />
+                    <EyeIcon
+                      className={cn(
+                        "cursor-pointer text-muted-foreground",
+                        showPassword.confirmPassword && "text-primary",
+                      )}
+                    />
                   ) : (
                     <EyeOffIcon className="cursor-pointer" />
                   )}
@@ -228,7 +238,11 @@ const SignupForm = ({ className, ...props }) => {
 
         {/* SUBMIT */}
         <Field>
-          <Button type="submit" disabled={!form.formState.isValid || authLoading} className={"py-6! cursor-pointer"}>
+          <Button
+            type="submit"
+            disabled={!form.formState.isValid || authLoading}
+            className={"py-6! cursor-pointer"}
+          >
             {authLoading ? "Signing up..." : "Sign up"}
           </Button>
         </Field>

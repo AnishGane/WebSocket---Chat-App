@@ -22,6 +22,7 @@ import {
 import { ProfileSchema } from "@/validations/profile.validation";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { ArrowLeft } from "lucide-react";
 
 const ProfilePage = () => {
   const { authUser, updateUserProfile, profileLoading } = useAuth();
@@ -199,7 +200,8 @@ const ProfilePage = () => {
                     <img
                       src={previewImage}
                       alt="Profile Preview"
-                      className="h-full w-full object-cover rounded-full"
+                      className="h-full w-full object-cover rounded-full select-none"
+                      draggable="false"
                     />
                   ) : (
                     <div className="flex flex-col items-center justify-center gap-1">
@@ -333,6 +335,17 @@ const ProfilePage = () => {
             />
           </FieldGroup>
         </form>
+
+        <Button
+          variant="link"
+          onClick={() => window.history.back()}
+          className={
+            "cursor-pointer text-muted-foreground hover:text-primary mt-4"
+          }
+        >
+          <ArrowLeft />
+          Go Back
+        </Button>
       </div>
     </main>
   );

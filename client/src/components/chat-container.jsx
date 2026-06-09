@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils";
 import { formatMessageTime } from "@/utils/helper";
 import { BotMessageSquare } from "lucide-react";
 import { Info } from "lucide-react";
-import React from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
@@ -23,6 +22,7 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
+
     if (file) {
       console.log("Selected image:", file);
       // do something with it (preview/upload)
@@ -35,20 +35,23 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
         behavior: "smooth",
       });
     }
-  }, [messages, selectedUser]);
+  }, [selectedUser]);
 
   return selectedUser ? (
     <div className="relative w-full h-full overflow-y-auto scrollbar-hide border-r-2 border-border">
       {/* header */}
       <div className="flex items-center gap-3 py-3 px-4 border-b border-border justify-between">
         <div className="flex items-center gap-2">
-          <div className="size-12 rounded-full overflow-hidden ">
-            <img src="https://images.unsplash.com/photo-1775309679005-1854413248b2?q=80&w=748&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+          <div className="size-11 rounded-full overflow-hidden ">
+            <img
+              src="https://images.unsplash.com/photo-1775309679005-1854413248b2?q=80&w=748&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              draggable="false"
+            />
             {/* <img src={selectedUser.image} alt={selectedUser.fullName} /> */}
           </div>
-          <p className="flex items-center justify-center gap-2">
+          <p className="flex flex-col">
             {selectedUser.fullName}
-            <span className="size-2 rounded-full bg-green-500" />
+            <span className="text-sm text-green-500">Online</span>
           </p>
         </div>
 
@@ -57,7 +60,7 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
 
       {/* chat area */}
       <div className="h-[calc(100%-73px)] scrollbar-hide overflow-y-auto px-4 pb-24">
-        {messages.map((msg, index) => (
+        {messages.map((msg) => (
           <div
             key={msg._id}
             className={cn(
@@ -67,7 +70,10 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
           >
             {msg.image ? (
               <div className="size-12 rounded-full overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1775309679005-1854413248b2?q=80&w=748&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                <img
+                  src="https://images.unsplash.com/photo-1775309679005-1854413248b2?q=80&w=748&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  draggable="false"
+                />
                 {/* <img src={msg.image} alt="message attachment" /> */}
               </div>
             ) : (
@@ -99,7 +105,8 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
                     ? selectedUser.image
                     : "https://images.unsplash.com/photo-1775309679005-1854413248b2?q=80&w=748&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 }
-                alt=""
+                alt="user image"
+                draggable="false"
               />
             </div>
           </div>
@@ -133,17 +140,17 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
         </InputGroup>
 
         <Button
-          variant="outline"
+          disabled={true}
           className="flex items-center size-8 justify-center mr-3 cursor-pointer"
         >
-          <Send className="size-5 rotate-45 mr-1" />
+          <Send className="size-4 rotate-45 mr-1" />
         </Button>
       </div>
     </div>
   ) : (
     <div className="w-full h-full flex items-center justify-center flex-col gap-2">
       <BotMessageSquare className="size-14 text-muted-foreground animate-bounce" />
-      <p className="text-3xl font-medium text-muted-foreground">
+      <p className="text-2xl font-medium text-muted-foreground">
         Chat with anyone, anytime & anywhere.
       </p>
     </div>

@@ -108,7 +108,12 @@ const LoginForm = ({ className, ...props }) => {
                   align="inline-end"
                 >
                   {showPassword ? (
-                    <EyeIcon className="cursor-pointer" />
+                    <EyeIcon
+                      className={cn(
+                        "cursor-pointer text-muted-foreground",
+                        showPassword && "text-primary",
+                      )}
+                    />
                   ) : (
                     <EyeOffIcon className="cursor-pointer" />
                   )}

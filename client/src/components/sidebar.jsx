@@ -1,6 +1,5 @@
 import { EllipsisVertical } from "lucide-react";
 import { BotMessageSquare } from "lucide-react";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -15,9 +14,18 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { Search } from "lucide-react";
 import SidebarUserCard from "./sidebar-user-card";
 import { USER_DATA } from "@/constants";
+import { Pen } from "lucide-react";
+import { LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 const Sidebar = ({ selectedUser, setSelectedUser }) => {
   const navigate = useNavigate();
+  const { logoutUser } = useAuth();
+
+  const handleLogout = () => {
+    logoutUser();
+    navigate("/auth");
+  };
 
   return (
     <div
@@ -26,25 +34,29 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
         selectedUser && "max-md:hidden",
       )}
     >
-      <div className="pb-5 space-y-2">
+      <div className="pb-5 space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <BotMessageSquare />
+          <div className="flex items-center gap-1 text-xl font-medium">
+            <BotMessageSquare className="size-8" />
             QuickChat
           </div>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className={"cursor-pointer"}>
+              <Button variant="outline" className={"cursor-pointer"}>
                 <EllipsisVertical />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuGroup>
                 <DropdownMenuItem onClick={() => navigate("/profile")}>
+                  <Pen />
                   Edit Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem>Logout</DropdownMenuItem>
+                <DropdownMenuItem variant="destructive" onClick={handleLogout}>
+                  <LogOut />
+                  Logout
+                </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -60,8 +72,13 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
         </InputGroup>
       </div>
 
-      <h1 className="text-base ml-2 font-medium">Total Users in App [1.2k]</h1>
-      {/* <h1 className="text-base ml-2 font-medium">Total Users in App [{USER_DATA.length}]</h1> */}
+      <div className="flex items-center justify-between mb-2.5">
+        <h1 className="text-base ml-2 text-muted-foreground">
+          Total Users in App
+        </h1>
+        {/* <h1 className="text-base ml-2 font-medium">Total Users in App [{USER_DATA.length}]</h1> */}
+        <span>(1.2k)</span>
+      </div>
 
       {/* Users Lists */}
       <div className="flex flex-col gap-2 border border-border p-1.5 rounded-2xl">
